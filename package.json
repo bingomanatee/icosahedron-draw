@@ -1,0 +1,31 @@
+{
+  "name": "icosahedron-draw",
+  "version": "0.0.1",
+  "description": "renders points of an icosahedron",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bingomanatee/icosahedron-draw.git"
+  },
+  "keywords": [
+    "icosahedron",
+    "canvas"
+  ],
+  "author": "Dave Edelhart",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/bingomanatee/icosahedron-draw/issues"
+  },
+  "devDependencies": {
+    "tap": "~0.4.4"
+  },
+  "dependencies": {
+    "canvas": "~1.1.0",
+    "gate": "~0.3.0",
+    "doubly-linked-list": "~0.1.5",
+    "jsts": "~0.13.2"
+  }
+}
