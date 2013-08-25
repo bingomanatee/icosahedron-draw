@@ -12,53 +12,57 @@ tap.test('polysphere', {timeout: 1000 * 10, skip: false }, function (suite) {
 
     var poly = new icor.Polysphere(300, 200, [
         {ro: 0, uv: { x: 0, y: 0}, color: [0, 0, 255]},
-        {ro: 1, uv: {x: 1, y: 0}, color: [255, 0, 0]},
-        {ro: 2, uv: {x: 0, y: 1}, color: [0, 255, 0]}
+        {ro: 1, uv: {x: 0.5, y: 0}, color: [255, 0, 0]},
+        {ro: 2, uv: {x: 0, y: 0.5}, color: [0, 255, 0]}
     ]);
 
-    var t = new icor.Triangle(poly.vertices.slice(0, 3), poly);
+    var t = new icor.Triangle(poly.vertices.slice(0, 3), poly, true);
 
     suite.test('triangle', {timeout: 1000 * 10, skip: false }, function (t_test) {
 
         var center = t.center(true);
 
-        t_test.equal(center.x, 100, 'center x');
-        t_test.equal(center.y, 66.66666666666666, 'center y');
+        t_test.equal(center.x, 50, 'center x');
+        t_test.equal(center.y, 33.33333333333333, 'center y');
 
         var frags = _.sortBy(t.frag(), function (p) {
             return p.x * 10000 + p.y
         });
 
-        console.log('.... frags', util.inspect(frags));
-        t_test.deepEqual(frags, [ [ 0,
-            { x: 0, y: 0 },
-            { x: 150, y: 0 },
-            { x: 100, y: 66.66666666666666 } ],
-            [ 0,
+      //  console.log('.... frags', util.inspect(frags));
+        t_test.deepEqual(frags,
+            [ [ 0,
                 { x: 0, y: 0 },
-                { x: 0, y: 100 },
-                { x: 100, y: 66.66666666666666 } ],
-            [ 1,
-                { x: 300, y: 0 },
-                { x: 150, y: 0 },
-                { x: 100, y: 66.66666666666666 } ],
-            [ 1,
-                { x: 300, y: 0 },
-                { x: 150, y: 100 },
-                { x: 100, y: 66.66666666666666 } ],
-            [ 2,
-                { x: 0, y: 200 },
-                { x: 0, y: 100 },
-                { x: 100, y: 66.66666666666666 } ],
-            [ 2,
-                { x: 0, y: 200 },
-                { x: 150, y: 100 },
-                { x: 100, y: 66.66666666666666 } ] ]);
+                { x: 75, y: 0 },
+                { x: 50, y: 33.33333333333333 } ],
+                [ 0,
+                    { x: 0, y: 0 },
+                    { x: 0, y: 50 },
+                    { x: 50, y: 33.33333333333333 } ],
+                [ 1,
+                    { x: 150, y: 0 },
+                    { x: 75, y: 0 },
+                    { x: 50, y: 33.33333333333333 } ],
+                [ 1,
+                    { x: 150, y: 0 },
+                    { x: 75, y: 50 },
+                    { x: 50, y: 33.33333333333333 } ],
+                [ 2,
+                    { x: 0, y: 100 },
+                    { x: 0, y: 50 },
+                    { x: 50, y: 33.33333333333333 } ],
+                [ 2,
+                    { x: 0, y: 100 },
+                    { x: 75, y: 50 },
+                    { x: 50, y: 33.33333333333333 } ] ]
+
+        );
 
         t_test.end();
     });
 
     suite.test('render_poly', {timeout: 1000 * 10, skip: false }, function (r_test) {
+        debugger;
         icor.render_poly(poly, [[0, 1, 2]], function(err, canvas){
             icor.canvas_to_file(canvas, path.resolve(OUT_ROOT, 'simple_triangles.png') , function(){
                 r_test.end();
