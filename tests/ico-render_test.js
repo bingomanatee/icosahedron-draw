@@ -119,6 +119,27 @@ tap.test('polysphere', {timeout: 1000 * 10, skip: false }, function (suite) {
         })
     });
 
+    suite.test('cache_planet 1', {timeout: 1000 * 10, skip: false}, function(pl_test){
+
+        var points = require('./../test_input/planet_1_points.json');
+        var faces = require('./../test_input/planet_1_faces.json');
+
+        function _c(){
+            return Math.floor(Math.random() * 255);
+        }
+
+        points.points.forEach(function(point){
+            point.color = [_c(), _c(), _c()];
+        });
+
+        var planet = new icor.Polysphere(300, 200, points.points);
+
+        planet.cache_triangles(path.resolve(__dirname, '../test_output/planet_1_300_200.json'),
+        function(){
+            pl_test.end();
+        }, faces);
+    });
+
     suite.end();
 
 });
