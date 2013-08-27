@@ -1,5 +1,4 @@
 /.idea/
 node_modules
-/test_output/planet_0_faces.png
-/test_output/planet_1_faces.png
-/test_output/simple_triangles.png
+test_output
+/test_output/planet_1_300_200.json
