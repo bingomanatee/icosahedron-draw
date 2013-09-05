@@ -3,12 +3,11 @@ var util = require('util');
 var path = require('path');
 var fs = require('fs');
 var tap = require('tap');
-
+var icor = require('./../index.js');
 var OUT_ROOT = path.resolve(__dirname, '../test_output');
 
 tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
 
-    var icor = require('./../index.js');
 
     var poly = new icor.Polysphere(300, 200, [
         {ro: 0, uv: { x: 0, y: 0}, color: [0, 0, 255]},
@@ -129,9 +128,6 @@ tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
         var faces = require('./../test_input/planet_3_faces.json');
 
 
-
-
-
         function _c() {
             return Math.floor(Math.random() * 255);
         }
@@ -141,15 +137,15 @@ tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
         });
 
         function _sectors_color(point) {
-            var weight = 1/point.s.length;
+            var weight = 1 / point.s.length;
             var color = point.s.reduce(function (out, sector) {
 
                 var add = sector_colors[sector];
-                return out.map(function(channel, c){
+                return out.map(function (channel, c) {
                     return channel + add[c] * weight;
                 })
 
-            }, [0,0,0]);
+            }, [0, 0, 0]);
             return color.map(function (value) {
                 return value / point.s.length;
             }).map(Math.floor);
@@ -163,19 +159,19 @@ tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
 
         icor.render_poly(planet, faces.faces, function (err, canvas) {
             var ctx = canvas.getContext('2d');
-            points.points.forEach(function(point){
+            points.points.forEach(function (point) {
                 var x = planet.width * point.uv[0];
                 var y = planet.height * point.uv[1];
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = '10px Arial';
-               // console.log(JSON.stringify(point));
+                // console.log(JSON.stringify(point));
                 ctx.fillText(point.s.join(' '), x, y);
                 ctx.fillStyle = '#660099';
                 ctx.fillText(util.format('r %s g %s b %s', point.color[0], point.color[1], point.color[2]), x, y + 12);
 
                 ctx.textAlign = 'right';
-                ctx.fillStyle='#000000';
+                ctx.fillStyle = '#000000';
                 ctx.fillText(point.ro, x, y);
             });
 
@@ -199,15 +195,19 @@ tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
         });
 
         function _sectors_color(point) {
-            var weight = 1/point.s.length;
+            if (!point.s) {
+                console.log('bad point: %s', util.inspect(point));
+                throw new Error('bad point');
+            }
+            var weight = 1 / point.s.length;
             var color = point.s.reduce(function (out, sector) {
 
                 var add = sector_colors[sector];
-                return out.map(function(channel, c){
+                return out.map(function (channel, c) {
                     return channel + add[c] * weight;
                 })
 
-            }, [0,0,0]);
+            }, [0, 0, 0]);
             return color.map(function (value) {
                 return value / point.s.length;
             }).map(Math.floor);
@@ -220,22 +220,22 @@ tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
         var planet = new icor.Polysphere(4000, 2000, points.points);
 
         icor.render_poly(planet, faces.faces, function (err, canvas) {
-      /*      var ctx = canvas.getContext('2d');
-            points.points.forEach(function(point){
-                var x = planet.width * point.uv[0];
-                var y = planet.height * point.uv[1];
-                ctx.textAlign = 'left';
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = '10px Arial';
-                console.log(JSON.stringify(point));
-                ctx.fillText(point.s.join(' '), x, y);
-                ctx.fillStyle = '#660099';
-                ctx.fillText(util.format('r %s g %s b %s', point.color[0], point.color[1], point.color[2]), x, y + 12);
+            /*      var ctx = canvas.getContext('2d');
+             points.points.forEach(function(point){
+             var x = planet.width * point.uv[0];
+             var y = planet.height * point.uv[1];
+             ctx.textAlign = 'left';
+             ctx.fillStyle = '#FFFFFF';
+             ctx.font = '10px Arial';
+             console.log(JSON.stringify(point));
+             ctx.fillText(point.s.join(' '), x, y);
+             ctx.fillStyle = '#660099';
+             ctx.fillText(util.format('r %s g %s b %s', point.color[0], point.color[1], point.color[2]), x, y + 12);
 
-                ctx.textAlign = 'right';
-                ctx.fillStyle='#000000';
-                ctx.fillText(point.ro, x, y);
-            });*/
+             ctx.textAlign = 'right';
+             ctx.fillStyle='#000000';
+             ctx.fillText(point.ro, x, y);
+             });*/
 
             icor.canvas_to_file(canvas, path.resolve(OUT_ROOT, 'planet_6_sectors.png'), function () {
                 pl_test.end();
@@ -262,6 +262,57 @@ tap.test('polysphere', {timeout: 1000 * 100, skip: false }, function (suite) {
             function () {
                 pl_test.end();
             }, faces);
+    });
+
+    suite.test('pl', function (pl_test) {
+        var ico = require('icosahedron');
+        var detail = 4;
+        ico.io.points(function (err, points) {
+
+            ico.io.faces(function (err, faces) {
+
+
+                    function _c() {
+                        return Math.floor(Math.random() * 266);
+                    }
+
+                    var sector_colors = _.range(0, 20).map(function (s) {
+                        return  [_c(), _c(), _c()];
+                    });
+
+                    function _sectors_color(point) {
+                        if (!point.s) {
+                            console.log('bad point: %s', util.inspect(point));
+                            throw new Error('bad point');
+                        }
+                        var weight = 1 / point.s.length;
+                        var color = point.s.reduce(function (out, sector) {
+
+                            var add = sector_colors[sector];
+                            return out.map(function (channel, c) {
+                                return channel + add[c] * weight;
+                            })
+
+                        }, [0, 0, 0]);
+                        return color.map(function (value) {
+                            return value / point.s.length;
+                        }).map(Math.floor);
+                    }
+
+                    points.forEach(function (point) {
+                        point.color = _sectors_color(point);
+                    });
+
+                    var planet = new icor.Polysphere(4000, 2000, points);
+                    icor.render_poly(planet, faces.faces, function (err, canvas) {
+
+                        icor.canvas_to_file(canvas, path.resolve(OUT_ROOT, 'planet_6_sectors.png'), function () {
+                            pl_test.end();
+                        });
+                    })
+                }
+                , detail); // end ico.io.faces
+        }, detail); // end ico.io.points
     });
 
     suite.end();

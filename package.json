@@ -1,6 +1,6 @@
 {
   "name": "icosahedron-draw",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "renders points of an icosahedron",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "canvas": "~1.1.0",
     "gate": "~0.3.0",
     "doubly-linked-list": "~0.1.5",
-    "jsts": "~0.13.2"
+    "jsts": "~0.13.2",
+    "icosahedron": "0.0.5"
   }
 }

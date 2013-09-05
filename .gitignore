@@ -2,3 +2,4 @@
 node_modules
 test_output
 /test_output/planet_1_300_200.json
+/.DS_Store
